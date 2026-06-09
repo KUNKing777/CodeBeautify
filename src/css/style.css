@@ -1,12 +1,12 @@
 :root {
-    --bg: #000000;
-    --panel: #0a0a0a;
-    --panel-2: #111111;
-    --border: #1a1a1a;
-    --border-strong: #2a2a2a;
-    --text: #ededed;
+    --bg: #111111;
+    --panel: #161616;
+    --panel-2: #1c1c1c;
+    --border: #262626;
+    --border-strong: #333333;
+    --text: #e8e8e8;
     --text-dim: #888888;
-    --text-faint: #444444;
+    --text-faint: #555555;
     --accent: #0070f3;
     --accent-dim: #0747a6;
     --mono: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace;
@@ -181,13 +181,13 @@
 
   main.canvas {
     background:
-      linear-gradient(45deg, #0a0a0a 25%, transparent 25%),
-      linear-gradient(-45deg, #0a0a0a 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #0a0a0a 75%),
-      linear-gradient(-45deg, transparent 75%, #0a0a0a 75%);
+      linear-gradient(45deg, #111111 25%, transparent 25%),
+      linear-gradient(-45deg, #111111 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #111111 75%),
+      linear-gradient(-45deg, transparent 75%, #111111 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, 10px 0;
-    background-color: #090909;
+    background-color: #0e0e0e;
     overflow: auto;
     display: flex; align-items: safe center; justify-content: safe center;
     padding: 40px; position: relative;
