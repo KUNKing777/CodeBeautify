@@ -6,7 +6,7 @@
 
 ## 功能
 
-- **200+ 编程语言** — 基于 highlight.js 的语法高亮，自动检测语言
+- **192 种编程语言** — 基于 highlight.js 的语法高亮，自动检测语言
 - **23 种语法主题** — 暗色/亮色主题自由切换，Atom One Dark、Dracula、GitHub 等
 - **多种导出格式** — PNG、SVG、HTML、RTF，支持 1x-4x 倍率导出
 - **窗口样式** — macOS 红绿灯、Windows 控件、无控件、隐藏标题栏
