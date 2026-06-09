@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CodeBeautify - 代码截图美化器</title>
+<meta name="description" content="粘贴代码，选择主题，一键导出精美截图。支持 200+ 编程语言、23 种主题、多种导出格式。" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
+<style id="currentTheme"></style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>CodeBeautify</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn ghost" id="btnReset" title="重置所有设置">↺ 重置</button>
+      <button class="btn" id="btnCopyImg">⧉ 复制 PNG</button>
+      <button class="btn" id="btnExportSvg">SVG</button>
+      <button class="btn" id="btnExportRtf">RTF</button>
+      <button class="btn" id="btnExportHtml">HTML</button>
+      <button class="btn primary" id="btnExportPng">⬇ 导出 PNG</button>
+    </div>
+  </header>
+
+  <aside class="left">
+    <div class="section" style="flex:1; display:flex; flex-direction:column;">
+      <div class="section-title">代码</div>
+      <label class="field">
+        <div class="lbl">语言 <span class="val" id="langVal">自动检测</span></div>
+        <select id="language"></select>
+      </label>
+      <div style="display:flex; gap:6px; margin-bottom:10px;">
+        <button class="btn" id="btnBeautify" style="flex:1;" title="格式化代码 (Ctrl+Shift+F)">✨ 格式化</button>
+        <button class="btn" id="btnBeautifyUndo" title="撤销格式化" style="padding:7px 10px;">↶</button>
+      </div>
+      <div class="editor-wrap" style="flex:1;">
+        <textarea id="code" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+      </div>
+    </div>
+  </aside>
+
+  <main class="canvas" id="canvas">
+    <div class="canvas-meta">预览 · <span id="dimensions">—</span></div>
+    <div id="stage">
+      <div id="card">
+        <div class="window-header" id="windowHeader">
+          <div class="traffic mac" id="traffic"><span></span><span></span><span></span></div>
+          <div class="window-title-wrap">
+            <input type="text" class="window-title-input" id="windowTitle" value="" placeholder="" />
+          </div>
+          <div class="header-spacer" style="width:60px;"></div>
+        </div>
+        <div class="code-wrap">
+          <div class="line-numbers" id="lineNumbers"></div>
+          <pre class="code-pre"><code id="output" class="hljs"></code></pre>
+        </div>
+        <div class="watermark hidden" id="watermark">CodeBeautify</div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="right">
+
+    <div class="section">
+      <div class="section-title">主题</div>
+      <label class="field">
+        <div class="lbl">语法主题</div>
+        <select id="theme"></select>
+      </label>
+
+      <label class="field">
+        <div class="lbl">卡片背景色</div>
+        <input type="color" id="cardBg" value="#282c34" />
+        <div class="hint">自动跟随主题背景色</div>
+      </label>
+
+      <label class="toggle"><span class="lbl">自动跟随主题</span>
+        <input type="checkbox" id="autoCardBg" checked /><span class="switch"></span>
+      </label>
+    </div>
+
+    <div class="section">
+      <div class="section-title">窗口</div>
+      <label class="field">
+        <div class="lbl">控件样式</div>
+        <select id="windowStyle">
+          <option value="mac">macOS 红绿灯</option>
+          <option value="windows">Windows</option>
+          <option value="none">无控件</option>
+          <option value="hide">隐藏标题栏</option>
+        </select>
+      </label>
+      <label class="field">
+        <div class="lbl">标题</div>
+        <input type="text" id="titleInput" placeholder="可选的窗口标题" />
+      </label>
+      <label class="toggle"><span class="lbl">显示标题</span>
+        <input type="checkbox" id="showTitle" checked /><span class="switch"></span>
+      </label>
+      <div class="row">
+        <label class="field">
+          <div class="lbl">标题背景</div>
+          <input type="color" id="titleBg" value="#3a3f4b" />
+        </label>
+        <label class="field">
+          <div class="lbl">标题颜色</div>
+          <input type="color" id="titleColor" value="#ffffff" />
+        </label>
+      </div>
+      <label class="toggle"><span class="lbl">自动标题背景</span>
+        <input type="checkbox" id="autoTitleBg" checked /><span class="switch"></span>
+      </label>
+      <label class="toggle"><span class="lbl">自动标题颜色</span>
+        <input type="checkbox" id="autoTitleColor" checked /><span class="switch"></span>
+      </label>
+      <label class="toggle"><span class="lbl">行号</span>
+        <input type="checkbox" id="showLines" /><span class="switch"></span>
+      </label>
+      <label class="toggle"><span class="lbl">自动换行</span>
+        <input type="checkbox" id="wordWrap" /><span class="switch"></span>
+      </label>
+      <label class="toggle"><span class="lbl">水印</span>
+        <input type="checkbox" id="showWatermark" /><span class="switch"></span>
+      </label>
+    </div>
+
+    <div class="section">
+      <div class="section-title">背景</div>
+      <div class="bg-swatches" id="bgSwatches"></div>
+      <label class="field" style="margin-top: 14px;">
+        <div class="lbl">自定义颜色</div>
+        <input type="color" id="customBg" value="#ff9a9e" />
+      </label>
+      <label class="toggle"><span class="lbl">透明背景</span>
+        <input type="checkbox" id="transparent" /><span class="switch"></span>
+      </label>
+    </div>
+
+    <div class="section">
+      <div class="section-title">布局</div>
+      <label class="field">
+        <div class="lbl">水平内边距 <span class="val" id="padXVal">56px</span></div>
+        <input type="range" id="padX" min="0" max="160" value="56" />
+      </label>
+      <label class="field">
+        <div class="lbl">垂直内边距 <span class="val" id="padYVal">56px</span></div>
+        <input type="range" id="padY" min="0" max="160" value="56" />
+      </label>
+      <label class="field">
+        <div class="lbl">圆角 <span class="val" id="radVal">10px</span></div>
+        <input type="range" id="radius" min="0" max="30" value="10" />
+      </label>
+      <label class="field">
+        <div class="lbl">阴影 <span class="val" id="shadowVal">68</span></div>
+        <input type="range" id="shadow" min="0" max="120" value="68" />
+      </label>
+      <label class="field">
+        <div class="lbl">最大宽度 <span class="val" id="maxWidthVal">1100px</span></div>
+        <input type="range" id="maxWidth" min="400" max="2400" step="20" value="1100" />
+      </label>
+    </div>
+
+    <div class="section">
+      <div class="section-title">字体</div>
+      <label class="field">
+        <div class="lbl">字体族</div>
+        <select id="fontFamily">
+          <option value='ui-monospace, Menlo, Consolas, "DejaVu Sans Mono", monospace'>系统默认</option>
+          <option value="Consolas, 'Liberation Mono', monospace">Consolas (Windows)</option>
+          <option value="Menlo, Monaco, monospace">Menlo / Monaco (macOS)</option>
+          <option value="'SF Mono', ui-monospace, monospace">SF Mono (macOS)</option>
+          <option value="'Courier New', Courier, monospace">Courier New</option>
+          <option value="'DejaVu Sans Mono', monospace">DejaVu Sans Mono</option>
+          <option value="'Liberation Mono', monospace">Liberation Mono</option>
+          <option value="'Lucida Console', monospace">Lucida Console</option>
+          <option value="monospace">浏览器默认</option>
+        </select>
+        <div class="hint">仅系统字体，无网络请求</div>
+      </label>
+      <div class="row">
+        <label class="field">
+          <div class="lbl">字号 <span class="val" id="sizeVal">14</span></div>
+          <input type="range" id="fontSize" min="10" max="28" value="14" />
+        </label>
+        <label class="field">
+          <div class="lbl">行高 <span class="val" id="lhVal">1.55</span></div>
+          <input type="range" id="lineHeight" min="100" max="250" value="155" />
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">格式化</div>
+      <label class="field">
+        <div class="lbl">缩进 <span class="val" id="indentVal">4 空格</span></div>
+        <select id="indentStyle">
+          <option value="2">2 空格</option>
+          <option value="4" selected>4 空格</option>
+          <option value="8">8 空格</option>
+          <option value="tab">Tab</option>
+        </select>
+        <div class="hint">适用于 JS、JSON、XML、SQL、CSS、HTML、Java 等</div>
+      </label>
+    </div>
+
+    <div class="section">
+      <div class="section-title">导出</div>
+      <div class="export-grid">
+        <button class="btn" id="btnExportPng2">⬇ PNG</button>
+        <button class="btn" id="btnExportSvg2">⬇ SVG</button>
+        <button class="btn" id="btnExportHtml2">⬇ HTML</button>
+        <button class="btn" id="btnExportRtf2">⬇ RTF</button>
+      </div>
+      <label class="field" style="margin-top:12px;">
+        <div class="lbl">导出倍率 <span class="val" id="scaleVal">2×</span></div>
+        <input type="range" id="scale" min="1" max="4" value="2" />
+      </label>
+      <div class="hint">RTF 可直接粘贴到 Word。HTML 为独立文件，内嵌主题 CSS。</div>
+    </div>
+
+  </aside>
+</div>
+
+<div class="flash" id="flash">已复制</div>
+
+<script type="module" src="/src/js/main.js"></script>
+</body>
+</html>
